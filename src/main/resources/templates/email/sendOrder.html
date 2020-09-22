@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="'Good morning!'"></p>
+<p th:text="'We are ' +${totalLunch} + ' people from Dolittle AS on M3 that would like to order lunch.'"></p>
+
+<p th:text="'The orders are: '"></p>
+<p th:each="order : ${orders}" th:text="${order.amount} + ' - ' + ${#strings.isEmpty(order.requests) ? 'Regular' : order.requests} "></p>
+<p>
+    <em th:text="'Thank you - Dolittle AS'"></em> <br />
+</p>
+</body>
+</html>

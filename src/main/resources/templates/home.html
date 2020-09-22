@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/headTag :: headTag">
+    <title></title>
+</head>
+<body>
+<nav th:replace="fragments/navTag :: navTag('home')">
+</nav>
+
+<main role="main" class="container">
+
+    <div class="card">
+        <div class="card-body">
+            <h3 th:text="'Hi ' + ${currentUser.getGivenName()}">Hi</h3>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <button type="button" th:if="${!lunch.getStatus()}" class="btn btn-primary" data-toggle="modal" data-target="#orderLunchModal">
+                Order lunch
+            </button>
+            <button type="button" th:if="${!lunch.getStatus() and currentUser.getName() eq 'Retna Ramachandran'}" class="btn btn-danger" th:onclick="'location.href=\'/email\''">
+                Send email
+            </button>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">[[${#temporals.format(lunch.getOrderDate(),'dd.MM.yyyy')}]] - <span th:class="'badge badge-' + ${lunch.getStatus() eq false ? 'secondary' : 'success'}" th:text="${lunch.getStatus() eq false ? 'Lunch order pending' : 'Lunch order sent'}"></span></h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Special request</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order, rowStat : ${lunch.getOrderList()}">
+                    <td th:text="${rowStat.count}">1</td>
+                    <td th:text="${order.getEmployee()}"></td>
+                    <td th:text="${#lists.isEmpty(order.getRequest()) ? 'Regular' : #strings.listJoin(order.getRequest(), ', ')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="orderLunchModal" tabindex="-1" aria-labelledby="orderLunchModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderLunchModalLabel">My Lunch Order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="myOrderForm" action="#" method="post">
+                        <div class="form-group row">
+                            <label for="employeeName" class="col-sm-2 col-form-label">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" readonly class="form-control-plaintext" id="employeeName" th:value="${currentUser.getName()}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="allergy">Special requests</label>
+                            <select multiple class="form-control" id="allergy">
+                                <option th:each="allergy : ${allergies}" th:value="${{allergy}}" th:text="${allergy}">1</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" name="myOrder">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script type="text/javascript">
+    let lunchHost = window.location.protocol +"//"+ window.location.host;
+
+    let myOrderUpdater = {
+        request: "",
+        modal: null,
+
+        clear: function (){
+            this.request = "";
+            this.modal.modal('hide');
+            this.modal = null;
+        }
+    };
+
+    $(document).ready(function (){
+        $('#myOrderForm').submit(function (event) {
+            event.preventDefault();
+            myOrderForm_submit();
+        });
+
+        $('#orderLunchModal').on('show.bs.modal', function (event) {
+            myOrderUpdater.modal = $(this);
+        });
+    });
+
+    function myOrderForm_submit() {
+
+        let modal = myOrderUpdater.modal;
+        let orderValue = {};
+        orderValue["employeeName"]= modal.find('.modal-body input').val();
+        let requestValue = [];
+        $.each($('#allergy option:selected'), function (){
+           requestValue.push($(this).val());
+        });
+
+        orderValue["allergy"] = requestValue;
+        myOrderUpdater.request = requestValue;
+        console.log(orderValue);
+
+        let headerParam = '{"'+ $("meta[name='_csrf_header']").attr("content") +'":"'+ $("meta[name='_csrf']").attr("content") +'"}';
+
+        $.ajax({
+            type: "POST",
+            headers: JSON.parse(headerParam),
+            contentType: "application/json",
+            url: lunchHost + "/order" ,
+            data: JSON.stringify(orderValue),
+            dataType: 'json',
+            cache: false,
+            timeout: 5000,
+            success: function (data) {
+                myOrderUpdater.clear();
+                window.location.reload();
+            },
+            error: function (e) {
+                myOrderUpdater.clear();
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
