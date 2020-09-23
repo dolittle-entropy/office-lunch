@@ -29,12 +29,13 @@ public class SendLunchOrder {
         this.lunchService = lunchService;
     }
 
-    @Scheduled(cron = "0 30 9 ? * MON-FRI")
+    @Scheduled(cron = "0 30 9 ? * MON-FRI", zone = "CET")
     public void sendLunchOrder() {
+        log.debug("Sending lunch order email.");
         Lunch lunch4Today = lunchService.getLunch4Today();
 
         if (lunch4Today.getStatus()) {
-            // Email already sent when true
+            log.debug("Lunch order email already sent.");
             return;
         }
 

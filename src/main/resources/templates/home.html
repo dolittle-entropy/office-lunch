@@ -15,8 +15,8 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-header">
-            <button type="button" th:if="${!lunch.getStatus()}" class="btn btn-primary" data-toggle="modal" data-target="#orderLunchModal">
+        <div class="card-header" th:if="${!lunch.getStatus()}">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#orderLunchModal">
                 Order lunch
             </button>
             <button type="button" th:if="${!lunch.getStatus() and currentUser.getName() eq 'Retna Ramachandran'}" class="btn btn-danger" th:onclick="'location.href=\'/email\''">

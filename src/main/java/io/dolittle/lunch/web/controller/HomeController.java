@@ -8,8 +8,8 @@ import io.dolittle.lunch.web.dto.UserDTO;
 import io.dolittle.lunch.web.service.LunchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @Slf4j
 public class HomeController {
 
+    @Value("${dolittle.allergy.choices}")
+    private String allergies;
 
     private final LunchService lunchService;
 
@@ -41,20 +44,14 @@ public class HomeController {
     public UserDTO getCurrentUser(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()){
             log.info(authentication.getDetails().toString());
-            return Util.getUser((DefaultOidcUser) authentication.getPrincipal());
+            return Util.getUser();
         }
         return null;
     }
 
     @ModelAttribute("allergies")
     public List<String> getAllergies() {
-        List<String> allergies = new ArrayList<>();
-        allergies.add("Vegan");
-        allergies.add("Vegetarian");
-        allergies.add("Nut allergy");
-        allergies.add("Seafood allergy");
-
-        return allergies;
+        return Arrays.asList(this.allergies.split("\\s*,\\s*"));
     }
 
 

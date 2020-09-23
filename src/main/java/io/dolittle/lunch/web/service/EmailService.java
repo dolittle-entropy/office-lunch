@@ -3,6 +3,7 @@
 
 package io.dolittle.lunch.web.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,6 +18,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class EmailService {
 
     @Value("${dolittle.email.order.to}")
@@ -57,6 +59,7 @@ public class EmailService {
 
         javaMailSender.send(message);
         lunchService.updateLunchStatus();
+        log.info("Lunch order email sent. {}", sendTo);
 
     }
 }

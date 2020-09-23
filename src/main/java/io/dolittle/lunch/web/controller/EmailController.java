@@ -8,8 +8,6 @@ import io.dolittle.lunch.web.component.SendLunchOrder;
 import io.dolittle.lunch.web.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -27,7 +25,7 @@ public class EmailController {
     @GetMapping(value = "/email")
     public String sendTestEmail() {
         log.info("Sending test email");
-        UserDTO userDTO = Util.getUser((DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        UserDTO userDTO = Util.getUser();
 
         String name = userDTO.getName();
 

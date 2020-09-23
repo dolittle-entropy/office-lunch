@@ -31,11 +31,11 @@ public class OrderController {
 
     @PostMapping(value = "/order")
     public ResponseEntity<String> placeOrder(@RequestBody OrderDTO orderDTO) {
-        UserDTO userDTO = Util.getUser((DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        UserDTO userDTO = Util.getUser();
         log.info("Order received: Name: {}, Request{} from User:{}", orderDTO.getEmployeeName(), orderDTO.getAllergy(), userDTO.getName());
 
         Order order = new Order();
-        order.setEmployee(orderDTO.getEmployeeName());
+        order.setEmployee(userDTO.getName());
         order.setRequest(orderDTO.getAllergy());
 
         orderService.placeOrder(order);

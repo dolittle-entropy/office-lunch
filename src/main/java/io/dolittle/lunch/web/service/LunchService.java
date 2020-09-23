@@ -30,7 +30,7 @@ public class LunchService {
         Optional<Lunch> findLunch = lunchRepository.findById(dateAsString);
 
         if (findLunch.isPresent()) {
-            log.info("Found doc with id: {}", dateAsString);
+            log.debug("Found doc with id: {}", dateAsString);
             return findLunch.get();
         }
 
