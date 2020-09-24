@@ -31,8 +31,8 @@ public class OrderService {
 
     public void placeOrder(Order order) {
         Lunch lunch4Today = lunchService.getLunch4Today();
-        if (lunch4Today.getStatus()) {
-            //THrow can't place order has lunch email has been sent.
+        if (lunch4Today.hasLunchBeenOrdered()) {
+            // Throw some shit about 'you're too late' - ref Pedro :)
             return;
         }
 

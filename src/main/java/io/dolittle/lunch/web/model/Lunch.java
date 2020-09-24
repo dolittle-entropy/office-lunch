@@ -33,4 +33,8 @@ public class Lunch {
         orderList.remove(order);
     }
 
+    public Boolean hasLunchBeenOrdered() {
+        return getStatus();
+    }
+
 }

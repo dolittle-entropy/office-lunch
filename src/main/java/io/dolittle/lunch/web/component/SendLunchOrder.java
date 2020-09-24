@@ -34,7 +34,7 @@ public class SendLunchOrder {
         log.debug("Sending lunch order email.");
         Lunch lunch4Today = lunchService.getLunch4Today();
 
-        if (lunch4Today.getStatus()) {
+        if (lunch4Today.hasLunchBeenOrdered()) {
             log.debug("Lunch order email already sent.");
             return;
         }
