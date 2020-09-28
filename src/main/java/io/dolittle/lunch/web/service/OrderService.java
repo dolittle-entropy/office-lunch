@@ -59,6 +59,12 @@ public class OrderService {
     }
 
     public void cancelOrder(String orderId) {
+        Lunch lunch4Today = lunchService.getLunch4Today();
+        if (lunch4Today.hasLunchBeenOrdered()) {
+            // Throw some shit about 'you're too late' - ref Pedro :)
+            return;
+        }
+
         Order guestOrder = getGuestOrder(orderId);
         deleteOrder(guestOrder);
         lunchService.removeOrder(guestOrder);

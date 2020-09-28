@@ -3,7 +3,6 @@
 
 package io.dolittle.lunch.web.controller;
 
-import io.dolittle.lunch.web.Util;
 import io.dolittle.lunch.web.dto.OrderDTO;
 import io.dolittle.lunch.web.dto.UserDTO;
 import io.dolittle.lunch.web.model.Order;
