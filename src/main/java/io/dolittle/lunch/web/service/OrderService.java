@@ -6,6 +6,7 @@ package io.dolittle.lunch.web.service;
 import io.dolittle.lunch.web.Util;
 import io.dolittle.lunch.web.model.Lunch;
 import io.dolittle.lunch.web.model.Order;
+import io.dolittle.lunch.web.model.OrderType;
 import io.dolittle.lunch.web.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -36,26 +37,47 @@ public class OrderService {
             return;
         }
 
-        Order employeeOrder = getEmployeeOrder(order.getEmployee());
+        Order userOrder;
 
-        if (employeeOrder == null) {
+        if (order.getOrderType().equals(OrderType.GUEST)) {
+            userOrder = null;
+        } else {
+            userOrder = getUserOrder(order.getUser());
+        }
+
+
+        if (userOrder == null) {
             order.setLunchId(lunch4Today.getId());
             Order savedOrder = saveOrder(order);
             lunch4Today.addOrder(savedOrder);
             lunchService.saveLunch(lunch4Today);
             return;
         }
-        employeeOrder.setRequest( order.getRequest());
-        saveOrder(employeeOrder);
+        userOrder.setRequest( order.getRequest());
+        saveOrder(userOrder);
 
+    }
+
+    public void cancelOrder(String orderId) {
+        Order guestOrder = getGuestOrder(orderId);
+        deleteOrder(guestOrder);
+        lunchService.removeOrder(guestOrder);
     }
 
     private Order saveOrder(Order order) {
         return orderRepository.save(order);
     }
 
-    private Order getEmployeeOrder(String employee) {
+    private void deleteOrder(Order order) {
+        orderRepository.delete(order);
+    }
+
+    private Order getUserOrder(String user) {
         return mongoTemplate.findOne(Query.query(Criteria.where("lunchId").is(Util.getDateAsString()).
-                andOperator(Criteria.where("employee").is(employee))), Order.class);
+                andOperator(Criteria.where("user").is(user))), Order.class);
+    }
+
+    private Order getGuestOrder(String orderId) {
+        return mongoTemplate.findById(orderId, Order.class);
     }
 }

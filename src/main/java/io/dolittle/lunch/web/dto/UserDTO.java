@@ -14,5 +14,6 @@ public class UserDTO {
     private String givenName;
     private String familyName;
     private String email;
+    private Boolean isManager;
 
 }

@@ -20,8 +20,9 @@ public class Order {
     private String id;
 
     private String lunchId;
-
-    private String employee;
+    private String user;
     private List<String> request = new ArrayList<>();
+
+    private OrderType orderType;
 
 }

@@ -16,28 +16,41 @@
     </div>
     <div class="card">
         <div class="card-header" th:if="${!lunch.getStatus()}">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#orderLunchModal">
+            <button type="button" class="btn btn-primary" th:attr="data-ordertype='user',data-modaltitle='My lunch order', data-user=${currentUser.getName()}" data-toggle="modal" data-target="#orderLunchModal">
                 Order lunch
+            </button>
+            <button type="button" th:if="${currentUser.getIsManager()}" class="btn btn-info" th:attr="data-ordertype='guest',data-modaltitle='Guest lunch order',data-user='Guest'" data-toggle="modal" data-target="#orderLunchModal">
+                Order guest lunch
             </button>
             <button type="button" th:if="${!lunch.getStatus() and currentUser.getName() eq 'Retna Ramachandran'}" class="btn btn-danger" th:onclick="'location.href=\'/email\''">
                 Send email
             </button>
         </div>
         <div class="card-body">
-            <h5 class="card-title">[[${#temporals.format(lunch.getOrderDate(),'dd.MM.yyyy')}]] - <span th:class="'badge badge-' + ${lunch.getStatus() eq false ? 'secondary' : 'success'}" th:text="${lunch.getStatus() eq false ? 'Lunch order pending' : 'Lunch order sent'}"></span></h5>
+            <h5 class="card-title">[[${#temporals.format(lunch.getOrderDate(),'dd.MM.yyyy')}]] - <span th:class="'badge badge-' + ${lunch.hasLunchBeenOrdered() eq false ? 'secondary' : 'success'}" th:text="${lunch.hasLunchBeenOrdered() eq false ? 'Lunch order pending' : 'Lunch order sent'}"></span></h5>
             <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Special request</th>
+                    <th scope="col"></th>
+
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="order, rowStat : ${lunch.getOrderList()}">
                     <td th:text="${rowStat.count}">1</td>
-                    <td th:text="${order.getEmployee()}"></td>
-                    <td th:text="${#lists.isEmpty(order.getRequest()) ? 'Regular' : #strings.listJoin(order.getRequest(), ', ')}"></td>
+                    <td th:text="${order.getUser()}"></td>
+                    <td th:if="${currentUser.getIsManager()}" th:text="${#lists.isEmpty(order.getRequest()) ? 'Regular' : #strings.listJoin(order.getRequest(), ', ')}"></td>
+                    <td th:if="${!currentUser.getIsManager()}" th:text="${order.getUser() eq currentUser.getName() ? (#lists.isEmpty(order.getRequest()) ? 'Regular' : #strings.listJoin(order.getRequest(), ', ')) : '***' }"></td>
+                    <td><button type="button" th:if="${order.getOrderType().toString() == 'GUEST' and (currentUser.getIsManager() eq true)}" class="btn btn-outline-danger"
+                                th:attr="data-id=${order.getId()}" th:onclick="'javascript:cancelOrder(this)'">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cart-x" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path>
+                            <path fill-rule="evenodd" d="M6.646 5.646a.5.5 0 0 1 .708 0L8.5 6.793l1.146-1.147a.5.5 0 0 1 .708.708L9.207 7.5l1.147 1.146a.5.5 0 0 1-.708.708L8.5 8.207 7.354 9.354a.5.5 0 1 1-.708-.708L7.793 7.5 6.646 6.354a.5.5 0 0 1 0-.708z"></path>
+                        </svg>
+                    </button></td>
                 </tr>
                 </tbody>
             </table>
@@ -49,7 +62,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="orderLunchModalLabel">My Lunch Order</h5>
+                    <h5 class="modal-title" id="orderLunchModalLabel">Lunch Order</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -57,9 +70,9 @@
                 <div class="modal-body">
                     <form id="myOrderForm" action="#" method="post">
                         <div class="form-group row">
-                            <label for="employeeName" class="col-sm-2 col-form-label">Name</label>
+                            <label for="userName" class="col-sm-2 col-form-label">Name</label>
                             <div class="col-sm-10">
-                                <input type="text" readonly class="form-control-plaintext" id="employeeName" th:value="${currentUser.getName()}">
+                                <input type="text" readonly class="form-control-plaintext" id="userName">
                             </div>
                         </div>
                         <div class="form-group">
@@ -72,6 +85,7 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary" name="myOrder">Save changes</button>
                         </div>
+                        <input type="text" th:hidden="true" id="orderid" title="orderId"/>
                     </form>
                 </div>
             </div>
@@ -83,10 +97,16 @@
 
     let myOrderUpdater = {
         request: "",
+        orderType: "",
+        modalTitle: "",
+        user: "",
         modal: null,
 
         clear: function (){
             this.request = "";
+            this.orderType = "";
+            this.modalTitle = "";
+            this.user = "";
             this.modal.modal('hide');
             this.modal = null;
         }
@@ -99,15 +119,32 @@
         });
 
         $('#orderLunchModal').on('show.bs.modal', function (event) {
-            myOrderUpdater.modal = $(this);
+            let button = $(event.relatedTarget);
+            myOrderUpdater.orderType = button.data('ordertype');
+            myOrderUpdater.modalTitle = button.data('modaltitle');
+            myOrderUpdater.user = button.data('user');
+
+            let modal = $(this);
+            myOrderUpdater.modal = modal;
+
+            modal.find('#orderLunchModalLabel').text(myOrderUpdater.modalTitle);
+            modal.find('#userName').val(myOrderUpdater.user);
+
+
         });
     });
+
+    function getHeaders() {
+        let headerParam = '{"' + $("meta[name='_csrf_header']").attr("content") + '":"' + $("meta[name='_csrf']").attr("content") + '"}';
+        return headerParam;
+    }
 
     function myOrderForm_submit() {
 
         let modal = myOrderUpdater.modal;
         let orderValue = {};
-        orderValue["employeeName"]= modal.find('.modal-body input').val();
+        orderValue["userName"]= modal.find('.modal-body input').val();
+        orderValue["id"]= modal.find('#orderid').val();
         let requestValue = [];
         $.each($('#allergy option:selected'), function (){
            requestValue.push($(this).val());
@@ -116,14 +153,13 @@
         orderValue["allergy"] = requestValue;
         myOrderUpdater.request = requestValue;
         console.log(orderValue);
-
-        let headerParam = '{"'+ $("meta[name='_csrf_header']").attr("content") +'":"'+ $("meta[name='_csrf']").attr("content") +'"}';
+        let headerParam = getHeaders();
 
         $.ajax({
             type: "POST",
             headers: JSON.parse(headerParam),
             contentType: "application/json",
-            url: lunchHost + "/order" ,
+            url: lunchHost + "/order/" + myOrderUpdater.orderType,
             data: JSON.stringify(orderValue),
             dataType: 'json',
             cache: false,
@@ -134,6 +170,28 @@
             },
             error: function (e) {
                 myOrderUpdater.clear();
+            }
+        });
+    }
+
+    function cancelOrder(btn) {
+        let cancelValue = {};
+        cancelValue["id"]= $(btn).data('id');
+        let headerParam = getHeaders();
+
+        $.ajax({
+            type: "POST",
+            headers: JSON.parse(headerParam),
+            contentType: "application/json",
+            url: lunchHost + "/order/cancel",
+            data: JSON.stringify(cancelValue),
+            dataType: 'json',
+            cache: false,
+            timeout: 5000,
+            success: function (data) {
+                window.location.reload();
+            },
+            error: function (e) {
             }
         });
     }

@@ -6,6 +6,7 @@ package io.dolittle.lunch.web.controller;
 import io.dolittle.lunch.web.Util;
 import io.dolittle.lunch.web.component.SendLunchOrder;
 import io.dolittle.lunch.web.dto.UserDTO;
+import io.dolittle.lunch.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,16 +17,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class EmailController {
 
     private final SendLunchOrder sendLunchOrder;
+    private final UserService userService;
 
     @Autowired
-    public EmailController(SendLunchOrder sendLunchOrder) {
+    public EmailController(SendLunchOrder sendLunchOrder, UserService userService) {
         this.sendLunchOrder = sendLunchOrder;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/email")
     public String sendTestEmail() {
         log.info("Sending test email");
-        UserDTO userDTO = Util.getUser();
+        UserDTO userDTO = userService.getUser();
 
         String name = userDTO.getName();
 

@@ -3,10 +3,7 @@
 
 package io.dolittle.lunch.web;
 
-import io.dolittle.lunch.web.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,12 +20,4 @@ public class Util {
         return date;
     }
 
-    public static UserDTO getUser() {
-        DefaultOidcUser oidcUser = (DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return new UserDTO(oidcUser.getAttribute("name"),
-                oidcUser.getAttribute("given_name"),
-                oidcUser.getAttribute("family_name"),
-                oidcUser.getAttribute("upn"));
-
-    }
 }

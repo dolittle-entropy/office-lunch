@@ -9,6 +9,7 @@ import java.util.List;
 
 @Data
 public class OrderDTO {
-    private String employeeName;
+    private String id;
+    private String userName;
     private List<String> allergy;
 }

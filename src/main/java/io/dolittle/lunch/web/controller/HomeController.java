@@ -6,6 +6,7 @@ package io.dolittle.lunch.web.controller;
 import io.dolittle.lunch.web.Util;
 import io.dolittle.lunch.web.dto.UserDTO;
 import io.dolittle.lunch.web.service.LunchService;
+import io.dolittle.lunch.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,10 +29,12 @@ public class HomeController {
     private String allergies;
 
     private final LunchService lunchService;
+    private final UserService userService;
 
     @Autowired
-    public HomeController(LunchService lunchService) {
+    public HomeController(LunchService lunchService, UserService userService) {
         this.lunchService = lunchService;
+        this.userService = userService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -44,7 +47,7 @@ public class HomeController {
     public UserDTO getCurrentUser(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()){
             log.info(authentication.getDetails().toString());
-            return Util.getUser();
+            return userService.getUser();
         }
         return null;
     }

@@ -5,6 +5,7 @@ package io.dolittle.lunch.web.service;
 
 import io.dolittle.lunch.web.Util;
 import io.dolittle.lunch.web.model.Lunch;
+import io.dolittle.lunch.web.model.Order;
 import io.dolittle.lunch.web.repository.LunchRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,12 @@ public class LunchService {
         Lunch lunch4Today = getLunch4Today();
         lunch4Today.setStatus(true);
         saveLunch(lunch4Today);
+    }
+
+    public void removeOrder(Order order) {
+        Lunch lunch4Today = getLunch4Today();
+        lunch4Today.removeOrder(order);
+        saveLunch(lunch4Today);
+
     }
 }
