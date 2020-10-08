@@ -40,10 +40,11 @@ public class UserService {
 
 
         String given_name = oidcUser.getAttribute("given_name");
+        String upn = oidcUser.getAttribute("upn");
         return new UserDTO(oidcUser.getAttribute("name"),
                 given_name,
                 oidcUser.getAttribute("family_name"),
-                oidcUser.getAttribute("upn"), isManager(given_name));
+                upn, isManager(upn));
 
     }
 

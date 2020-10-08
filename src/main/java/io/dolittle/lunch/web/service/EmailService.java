@@ -44,7 +44,7 @@ public class EmailService {
     public void sendEmail(Map<String, Object> templateModel) throws MessagingException {
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(templateModel);
-        String htmlBody = springTemplateEngine.process("email/sendOrder.html", thymeleafContext);
+        String htmlBody = springTemplateEngine.process( "sendOrder.html", thymeleafContext);
         sendHtmlMessage(htmlBody);
     }
 

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
-@Import({WebSecurityConfig.class})
+@Import({WebSecurityConfig.class, TemplateConfig.class})
 @ComponentScan(basePackages = "io.dolittle.lunch.web")
 @EnableScheduling
 public class AppConfig {
