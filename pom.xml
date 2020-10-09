@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.dolittle.lunch</groupId>
 	<artifactId>lunch</artifactId>
-	<version>0.0.6</version>
+	<version>0.0.7</version>
 	<name>lunch</name>
 	<description>App for ordering lunch in Dolittle</description>
 

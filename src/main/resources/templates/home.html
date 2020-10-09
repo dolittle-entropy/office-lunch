@@ -11,7 +11,7 @@
 
     <div class="card">
         <div class="card-body">
-            <h3 th:text="'Hi ' + ${currentUser.getGivenName()}">Hi</h3>
+            <h3 th:text="'Hi ' + ${#strings.isEmpty(currentUser.getGivenName()) ? currentUser.getName() : currentUser.getGivenName()}">Hi</h3>
         </div>
     </div>
     <div class="card">

@@ -4,6 +4,7 @@
 package io.dolittle.lunch.web.service;
 
 import io.dolittle.lunch.web.dto.UserDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class UserService {
 
     private final Environment env;
@@ -38,12 +40,16 @@ public class UserService {
     public UserDTO getUser() {
         DefaultOidcUser oidcUser = (DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-
         String given_name = oidcUser.getAttribute("given_name");
         String upn = oidcUser.getAttribute("upn");
-        return new UserDTO(oidcUser.getAttribute("name"),
+        String name = oidcUser.getAttribute("name");
+        String family_name = oidcUser.getAttribute("family_name");
+        String unique_name = oidcUser.getAttribute("unique_name");
+
+        log.info("upn:{}, name:{}, gn:{}, fn:{}, un:{}", upn, name, given_name, family_name, unique_name);
+        return new UserDTO(name,
                 given_name,
-                oidcUser.getAttribute("family_name"),
+                family_name,
                 upn, isManager(upn));
 
     }
