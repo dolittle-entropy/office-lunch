@@ -46,16 +46,16 @@ public class UserService {
         String family_name = oidcUser.getAttribute("family_name");
         String unique_name = oidcUser.getAttribute("unique_name");
 
-        log.info("upn:{}, name:{}, gn:{}, fn:{}, un:{}", upn, name, given_name, family_name, unique_name);
+        log.debug("upn:{}, name:{}, gn:{}, fn:{}, un:{}", upn, name, given_name, family_name, unique_name);
         return new UserDTO(name,
                 given_name,
                 family_name,
-                upn, isManager(upn));
+                unique_name, isManager(unique_name));
 
     }
 
-    private Boolean isManager(String givenName) {
-        return this.managers.contains(givenName);
+    private Boolean isManager(String key) {
+        return this.managers.contains(key);
 
     }
 
