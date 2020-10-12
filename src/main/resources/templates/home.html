@@ -22,9 +22,6 @@
             <button type="button" th:if="${currentUser.getIsManager()}" class="btn btn-info" th:attr="data-ordertype='guest',data-modaltitle='Guest lunch order',data-user='Guest'" data-toggle="modal" data-target="#orderLunchModal">
                 Order guest lunch
             </button>
-            <button type="button" th:if="${!lunch.getStatus() and currentUser.getName() eq 'Retna Ramachandran'}" class="btn btn-danger" th:onclick="'location.href=\'/email\''">
-                Send email
-            </button>
         </div>
         <div class="card-body">
             <h5 class="card-title">[[${#temporals.format(lunch.getOrderDate(),'dd.MM.yyyy')}]] - <span th:class="'badge badge-' + ${lunch.hasLunchBeenOrdered() eq false ? 'secondary' : 'success'}" th:text="${lunch.hasLunchBeenOrdered() eq false ? 'Lunch order pending' : 'Lunch order sent'}"></span></h5>
