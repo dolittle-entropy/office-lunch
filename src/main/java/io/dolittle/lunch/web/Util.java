@@ -6,7 +6,9 @@ package io.dolittle.lunch.web;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -21,6 +23,18 @@ public class Util {
         String date = simpleDateFormat.format(new Date());
         log.debug("Today's date: {}", date);
         return date;
+    }
+
+    public static LocalDateTime getCurrentDateTime() {
+        return LocalDateTime.now().atZone(ZoneId.of("Europe/Paris")).toLocalDateTime();
+    }
+
+    public static String getDateAsString(LocalDateTime localDateTime) {
+        String pattern = "dd.MM.yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Europe/Paris")));
+
+        return simpleDateFormat.format(java.util.Date.from(localDateTime.toInstant(ZoneOffset.UTC)));
     }
 
 }

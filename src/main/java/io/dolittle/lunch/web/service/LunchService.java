@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -37,7 +36,7 @@ public class LunchService {
 
         Lunch lunch = new Lunch();
         lunch.setId(dateAsString);
-        lunch.setOrderDate(LocalDateTime.now());
+        lunch.setOrderDate(Util.getCurrentDateTime());
         lunch.setStatus(false);
         saveLunch(lunch);
 

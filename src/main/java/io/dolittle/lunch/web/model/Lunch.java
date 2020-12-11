@@ -3,6 +3,7 @@
 
 package io.dolittle.lunch.web.model;
 
+import io.dolittle.lunch.web.Util;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -35,6 +36,10 @@ public class Lunch {
 
     public Boolean hasLunchBeenOrdered() {
         return getStatus();
+    }
+
+    public String getOrderDateAsString() {
+        return Util.getDateAsString(orderDate);
     }
 
 }

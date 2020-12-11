@@ -3,7 +3,6 @@
 
 package io.dolittle.lunch.web.controller;
 
-import io.dolittle.lunch.web.Util;
 import io.dolittle.lunch.web.dto.UserDTO;
 import io.dolittle.lunch.web.service.LunchService;
 import io.dolittle.lunch.web.service.UserService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

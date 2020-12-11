@@ -24,7 +24,7 @@
             </button>
         </div>
         <div class="card-body">
-            <h5 class="card-title">[[${#temporals.format(lunch.getOrderDate(),'dd.MM.yyyy')}]] - <span th:class="'badge badge-' + ${lunch.hasLunchBeenOrdered() eq false ? 'secondary' : 'success'}" th:text="${lunch.hasLunchBeenOrdered() eq false ? 'Lunch order pending' : 'Lunch order sent'}"></span></h5>
+            <h5 class="card-title">[[${lunch.getOrderDateAsString()}]] - <span th:class="'badge badge-' + ${lunch.hasLunchBeenOrdered() eq false ? 'secondary' : 'success'}" th:text="${lunch.hasLunchBeenOrdered() eq false ? 'Lunch order pending' : 'Lunch order sent'}"></span></h5>
             <table class="table">
                 <thead>
                 <tr>
