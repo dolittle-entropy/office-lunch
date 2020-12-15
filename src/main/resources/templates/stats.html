@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/headTag :: headTag">
+    <title></title>
+</head>
+<body>
+<nav th:replace="fragments/navTag :: navTag('stats')">
+</nav>
+
+<main role="main" class="container">
+
+    <div class="card text-center">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Lunch overview</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="lunchStat">
+                <div class="card">
+                    <div th:each="item : ${lunchStats}">
+
+                        <div class="card-header" th:id="${item.key.getHtmlId()}">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left lunch-app-stats-button" type="button" th:data-target="'#' + ${item.key.getHtmlId()} + '_data'" data-toggle="collapse" aria-expanded="true" aria-controls="collapseOne">
+                                    [[${#strings.toUpperCase(item.key.getCategory())}]]
+                                </button>
+                            </h2>
+                        </div>
+
+                        <div th:id="${item.key.getHtmlId()} + '_data'" class="collapse" th:aria-labelledby="${item.key.getHtmlId()}" data-parent="#lunchStat">
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Lunch ordered</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="val : ${item.value}">
+                                            <td th:text="${val.getUser()}"></td>
+                                            <td th:text="${val.getLunch()}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

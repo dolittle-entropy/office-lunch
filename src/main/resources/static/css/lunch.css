@@ -1,3 +1,7 @@
 body {
     padding-top: 5rem;
 }
+
+.lunch-app-stats-button:focus{
+    box-shadow: none
+}
