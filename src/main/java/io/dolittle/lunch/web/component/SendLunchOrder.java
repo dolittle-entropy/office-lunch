@@ -29,7 +29,7 @@ public class SendLunchOrder {
         this.lunchService = lunchService;
     }
 
-    @Scheduled(cron = "0 30 9 ? * MON-FRI", zone = "CET")
+    @Scheduled(cron = "0 30 17 ? * MON-FRI", zone = "CET")
     public void sendLunchOrder() {
         log.debug("Sending lunch order email.");
         Lunch lunch4Today = lunchService.getLunch4Today();

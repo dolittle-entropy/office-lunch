@@ -56,8 +56,7 @@ public class EmailService {
         helper.setSubject(subject);
         helper.setText(htmlBody, true);
         helper.setFrom(emailFrom);
-
-        javaMailSender.send(message);
+        //Remove the mail send: javaMailSender.send(message);
         lunchService.updateLunchStatus();
         log.info("Lunch order email sent. {}", sendTo);
 

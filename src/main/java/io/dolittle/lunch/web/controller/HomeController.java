@@ -49,12 +49,4 @@ public class HomeController {
         }
         return null;
     }
-
-    @ModelAttribute("allergies")
-    public List<String> getAllergies() {
-        return Arrays.asList(this.allergies.split("\\s*,\\s*"));
-    }
-
-
-
 }
